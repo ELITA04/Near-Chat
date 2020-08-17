@@ -36,7 +36,7 @@ class Homepage extends StatelessWidget {
                       fontSize: 30
                   ),)),
                   SizedBox(height: 20,),
-                  FadeAnimation(1.2, Text("Automatic identity verification which enables you to verify your identity",
+                  FadeAnimation(1.2, Text("Chat with people in your vicinity!",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.grey[700],
