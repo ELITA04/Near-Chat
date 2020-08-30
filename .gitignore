@@ -38,3 +38,6 @@ lib/generated_plugin_registrant.dart
 
 # Hiding google json
 android/app/google-services.json
+
+# Hide reference
+lib/views/example_nearby.dart
