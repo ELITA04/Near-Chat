@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:near_chat/animations/animations.dart';
 import 'package:near_chat/components/input_field.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,11 +72,18 @@ class LoginPage extends StatelessWidget {
                           children: <Widget>[
                             FadeAnimation(
                               1.2,
-                              InputField(label: "Email"),
+                              InputField(
+                                label: "Email",
+                                controller: emailController,
+                              ),
                             ),
                             FadeAnimation(
                               1.3,
-                              InputField(label: "Password", obscureText: true),
+                              InputField(
+                                label: "Password",
+                                obscureText: true,
+                                controller: passwordController,
+                              ),
                             ),
                           ],
                         ),

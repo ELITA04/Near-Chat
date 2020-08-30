@@ -11,6 +11,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final GlobalKey<FormState> _passwordVerify = GlobalKey<FormState>();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
@@ -76,8 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     FadeAnimation(
                       1.3,
-                      InputField(
-                        label: "Password",
+                      TextFormField(
                         obscureText: true,
                         controller: passwordController,
                       ),
