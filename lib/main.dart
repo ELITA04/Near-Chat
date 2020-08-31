@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:near_chat/views/chat_room.dart';
 import 'package:near_chat/views/chat_screen.dart';
 import 'package:near_chat/views/example_nearby.dart';
-import 'package:near_chat/views/test_chat_screen.dart';
 import 'package:near_chat/views/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
