@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
-void main() => runApp(TestScreen());
 
 class TestScreen extends StatefulWidget {
   @override
@@ -101,7 +100,7 @@ class _MyBodyState extends State<Body> {
                           setState(() {
                           discovered.add(connectionButton(id, name, serviceId));
                           print(discovered);
-                          });
+                          },);
                         },
                         onEndpointLost: (id) {
                           showSnackbar("Lost Endpoint:" + id);
@@ -150,7 +149,7 @@ class _MyBodyState extends State<Body> {
   void showSnackbar(dynamic a) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(a.toString()),
-    ));
+    ),);
   }
 
   /// Called upon Connection request (on both devices)
