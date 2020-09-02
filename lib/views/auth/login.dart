@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:near_chat/animations/animations.dart';
-import 'package:near_chat/components/input_field.dart';
+import 'package:near_chat/components/auth/input_field.dart';
 
 class LoginPage extends StatefulWidget {
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:near_chat/animations/animations.dart';
-import 'package:near_chat/views/login.dart';
-import 'package:near_chat/views/sign_up.dart';
-import 'package:near_chat/components/coloured_button.dart';
+import 'package:near_chat/views/auth/login.dart';
+import 'package:near_chat/views/auth/sign_up.dart';
+import 'package:near_chat/components/auth/coloured_button.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override

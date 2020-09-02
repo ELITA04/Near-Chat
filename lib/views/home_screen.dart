@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:near_chat/components/bottom_button.dart';
-import 'package:near_chat/components/connection_init_sheet.dart';
-import 'package:near_chat/components/discovered_users.dart';
+import 'package:near_chat/components/home_screen.dart/bottom_button.dart';
+import 'package:near_chat/components/home_screen.dart/connection_init_sheet.dart';
+import 'package:near_chat/components/home_screen.dart/discovered_users.dart';
+import 'package:near_chat/views/chat/chat_room.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -36,9 +37,18 @@ class _ChatScreenState extends State<ChatScreen> {
         appBar: AppBar(
           title: Text('NearChat'),
         ),
-        body: ListView(
-          children: usersDiscovered,
-        ),
+        body: usersDiscovered.length < 1
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text('No Users Near You!'),
+                  ),
+                ],
+              )
+            : ListView(
+                children: usersDiscovered,
+              ),
         bottomNavigationBar: BottomAppBar(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,24 +162,26 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void handleAccept(id) {
     connectedTo = id;
-    Nearby().acceptConnection(
-      id,
-      onPayLoadRecieved: (endid, payload) async {
-        String str = String.fromCharCodes(payload.bytes);
-        showSnackbar('$endid: $str');
-      },
-      onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
-        if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
-          print(payloadTransferUpdate.bytesTransferred);
-        } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
-          print("failed");
-          showSnackbar(endid + ": FAILED to transfer file");
-        } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
-          showSnackbar(
-              "success, total bytes = ${payloadTransferUpdate.totalBytes}");
-        }
-      },
-    );
+    //TODO: Use a variable to for two places, ie the chat room and the functions below and test whether the values are being received in the chat room.
+    Nearby().acceptConnection(id,
+        onPayLoadRecieved: handlePayloadReceived,
+        onPayloadTransferUpdate: handlePayloadStatus);
+  }
+
+  void handlePayloadReceived(endid, payload) async {
+    String str = String.fromCharCodes(payload.bytes);
+    print(str);
+  }
+
+  void handlePayloadStatus(endid, payloadTransferUpdate) {
+    if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
+      print(payloadTransferUpdate.bytesTransferred);
+    } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
+      print("failed");
+      print(endid + ": FAILED to transfer file");
+    } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
+      print("success, total bytes = ${payloadTransferUpdate.totalBytes}");
+    }
   }
 
   void handleRequest(id) {
@@ -180,6 +192,14 @@ class _ChatScreenState extends State<ChatScreen> {
         onConnectionInit(id, info);
       },
       onConnectionResult: (id, status) {
+        if (status == Status.CONNECTED) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChatRoom(
+                        endpointID: id,
+                      )));
+        }
         showSnackbar(status);
       },
       onDisconnected: (id) {
