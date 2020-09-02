@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:near_chat/components/bottom_button.dart';
+import 'package:near_chat/components/connection_init_sheet.dart';
 import 'package:near_chat/components/discovered_users.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
@@ -11,6 +12,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final String userName = Random().nextInt(10000).toString();
   final Strategy strategy = Strategy.P2P_STAR;
 
@@ -30,6 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('NearChat'),
         ),
@@ -102,6 +105,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   DiscoveredUser(
                     userID: id,
                     userName: name,
+                    handleRequest: handleRequest,
                   ),
                 );
             });
@@ -119,14 +123,12 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         usersDiscovered = [];
       });
-
       await Nearby().stopDiscovery();
     }
   }
 
   void handleGoOffline(enable) async {
     await Nearby().stopAllEndpoints();
-    print(usersDiscovered);
     setState(() {
       usersDiscovered = [];
       isAdvertising = false;
@@ -135,57 +137,53 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void showSnackbar(dynamic value) {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          value.toString(),
-        ),
+    final snackBar = SnackBar(
+      content: Text(
+        value.toString(),
       ),
     );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   void onConnectionInit(String id, ConnectionInfo info) {
-    showModalBottomSheet(
-      context: context,
-      builder: (builder) {
-        return Center(
-          child: Column(
-            children: [
-              Text('id: $id'),
-              Text('Token: ${info.authenticationToken}'),
-              Text('Name: ${info.endpointName}'),
-              Text('Incoming: ${info.isIncomingConnection.toString()}'),
-              RaisedButton(
-                child: Text('Accept Connection'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  connectedTo = id;
-                  Nearby().acceptConnection(
-                    id,
-                    onPayLoadRecieved: (endid, payload) async {
-                      String str = String.fromCharCodes(payload.bytes);
-                      showSnackbar('$endid: $str');
-                    },
-                    onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
-                      if (payloadTransferUpdate.status ==
-                          PayloadStatus.IN_PROGRRESS) {
-                        print(payloadTransferUpdate.bytesTransferred);
-                      } else if (payloadTransferUpdate.status ==
-                          PayloadStatus.FAILURE) {
-                        print("failed");
-                        showSnackbar(endid + ": FAILED to transfer file");
-                      } else if (payloadTransferUpdate.status ==
-                          PayloadStatus.SUCCESS) {
-                        showSnackbar(
-                            "success, total bytes = ${payloadTransferUpdate.totalBytes}");
-                      }
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        );
+    connectionInitSheet(context, id, info.authenticationToken,
+        info.endpointName, info.isIncomingConnection.toString(), handleAccept);
+  }
+
+  void handleAccept(id) {
+    connectedTo = id;
+    Nearby().acceptConnection(
+      id,
+      onPayLoadRecieved: (endid, payload) async {
+        String str = String.fromCharCodes(payload.bytes);
+        showSnackbar('$endid: $str');
+      },
+      onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
+        if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
+          print(payloadTransferUpdate.bytesTransferred);
+        } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
+          print("failed");
+          showSnackbar(endid + ": FAILED to transfer file");
+        } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
+          showSnackbar(
+              "success, total bytes = ${payloadTransferUpdate.totalBytes}");
+        }
+      },
+    );
+  }
+
+  void handleRequest(id) {
+    Nearby().requestConnection(
+      userName,
+      id,
+      onConnectionInitiated: (id, info) {
+        onConnectionInit(id, info);
+      },
+      onConnectionResult: (id, status) {
+        showSnackbar(status);
+      },
+      onDisconnected: (id) {
+        showSnackbar(id);
       },
     );
   }

@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 class DiscoveredUser extends StatefulWidget {
   final String userID;
   final String userName;
+  final Function handleRequest;
 
-  DiscoveredUser({@required this.userID, @required this.userName});
+  DiscoveredUser(
+      {@required this.userID,
+      @required this.userName,
+      @required this.handleRequest});
 
   @override
   _DiscoveredUserState createState() => _DiscoveredUserState();
@@ -23,7 +27,7 @@ class _DiscoveredUserState extends State<DiscoveredUser> {
           ],
         ),
         onPressed: () {
-          print('Request Connection');
+          widget.handleRequest(widget.userID);
         },
       ),
     );
