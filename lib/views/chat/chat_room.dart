@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -19,6 +21,41 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
 
   @override
+  void initState() {
+    Nearby().acceptConnection(widget.endpointID,
+        onPayLoadRecieved: handlePayloadReceived,
+        onPayloadTransferUpdate: handlePayloadStatus);
+    super.initState();
+  }
+
+  void handlePayloadReceived(endid, payload) async {
+    String str = String.fromCharCodes(payload.bytes);
+    print(str);
+    Message message = Message(
+      text: str,
+      animationController: AnimationController(
+          vsync: this, duration: Duration(milliseconds: 800)),
+      otherUserName: widget.endpointID,
+    );
+    setState(() {
+      _messages.insert(0, message);
+      print('lnegt ${_messages.length}');
+    });
+    message.animationController.forward();
+  }
+
+  void handlePayloadStatus(endid, payloadTransferUpdate) {
+    if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
+      print(payloadTransferUpdate.bytesTransferred);
+    } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
+      print("failed");
+      print(endid + ": FAILED to transfer file");
+    } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
+      print("success, total bytes = ${payloadTransferUpdate.totalBytes}");
+    }
+  }
+
+  @override
   void dispose() {
     for (Message message in _messages) {
       message.animationController.dispose();
@@ -34,6 +71,7 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
       ),
       body: Column(
         children: <Widget>[
+          Text('${widget.endpointID}'),
           Flexible(
             child: ListView.builder(
               itemBuilder: (_, int index) => _messages[index],
@@ -57,6 +95,8 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
 
   void _submitMessage(String text) {
     _textController.clear();
+    Nearby().sendBytesPayload(
+        widget.endpointID, Uint8List.fromList(text.codeUnits));
     Message message = Message(
       text: text,
       animationController: AnimationController(

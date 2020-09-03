@@ -162,26 +162,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void handleAccept(id) {
     connectedTo = id;
-    //TODO: Use a variable to for two places, ie the chat room and the functions below and test whether the values are being received in the chat room.
-    Nearby().acceptConnection(id,
-        onPayLoadRecieved: handlePayloadReceived,
-        onPayloadTransferUpdate: handlePayloadStatus);
-  }
 
-  void handlePayloadReceived(endid, payload) async {
-    String str = String.fromCharCodes(payload.bytes);
-    print(str);
-  }
-
-  void handlePayloadStatus(endid, payloadTransferUpdate) {
-    if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
-      print(payloadTransferUpdate.bytesTransferred);
-    } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
-      print("failed");
-      print(endid + ": FAILED to transfer file");
-    } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
-      print("success, total bytes = ${payloadTransferUpdate.totalBytes}");
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatRoom(
+          endpointID: id,
+        ),
+      ),
+    );
   }
 
   void handleRequest(id) {
@@ -193,14 +182,8 @@ class _ChatScreenState extends State<ChatScreen> {
       },
       onConnectionResult: (id, status) {
         if (status == Status.CONNECTED) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ChatRoom(
-                        endpointID: id,
-                      )));
+          showSnackbar(status);
         }
-        showSnackbar(status);
       },
       onDisconnected: (id) {
         showSnackbar(id);
