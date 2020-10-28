@@ -13,8 +13,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,19 +74,18 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   FadeAnimation(
+                    1.4,
+                    InputField(
+                      label: "Enter Username",
+                      controller: usernameController,
+                    ),
+                  ),
+                  FadeAnimation(
                     1.3,
                     InputField(
                       label: "Enter Password",
                       obscureText: true,
                       controller: passwordController,
-                    ),
-                  ),
-                  FadeAnimation(
-                    1.4,
-                    InputField(
-                      label: "Confirm Password",
-                      obscureText: true,
-                      controller: confirmPasswordController,
                     ),
                   ),
                 ],
@@ -142,7 +140,9 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void signUp(BuildContext context) {
-    registerUser(emailController.text, passwordController.text).then(
+    registerUser(emailController.text, usernameController.text,
+            passwordController.text)
+        .then(
       (value) {
         print(value);
         if (value != 'success') {
@@ -155,8 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
               "Success!",
               "You've been registered successfully! Please login to begin chatting!",
               "Proceed", () {
-            Navigator.pop(context);
-            Navigator.pop(context);
+            Navigator.popUntil(context, (route) => route.isFirst);
           });
         }
       },

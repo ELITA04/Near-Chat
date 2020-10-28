@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:near_chat/animations/animations.dart';
 import 'package:near_chat/components/auth/input_field.dart';
 import 'package:near_chat/components/auth/coloured_button.dart';
@@ -134,11 +135,18 @@ class _LoginPageState extends State<LoginPage> {
       (value) {
         print(value);
         if (value is String) {
-          _showAlert(context, "An Error has Occurred!", value, "Try Again", () {
-            Navigator.pop(context);
-          });
+          _showAlert(
+            context,
+            "An Error has Occurred!",
+            value,
+            "Try Again",
+            () {
+              Navigator.pop(context);
+            },
+          );
         } else {
-          print('Username: ' + value['username']);
+          Hive.box('user').put('username', value['username']);
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         }
       },
     );

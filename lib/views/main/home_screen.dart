@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:near_chat/components/home_screen/bottom_button.dart';
 import 'package:near_chat/components/home_screen/connection_init_sheet.dart';
 import 'package:near_chat/components/home_screen/discovered_users.dart';
@@ -14,8 +15,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final String userName = Random().nextInt(10000).toString();
   final Strategy strategy = Strategy.P2P_STAR;
+  String userName;
 
   String connectedTo = 'None';
   List<DiscoveredUser> usersDiscovered = [];
@@ -27,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     Nearby().askLocationAndExternalStoragePermission();
     super.initState();
+    var result = Hive.box('user').get('username');
+    userName = result;
   }
 
   @override
@@ -35,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('NearChat'),
+          title: Text(userName),
         ),
         body: usersDiscovered.length < 1
             ? Column(
@@ -69,6 +72,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 name: 'Go Offline',
                 icon: Icons.portable_wifi_off,
                 handler: handleGoOffline,
+              ),
+              FlatButton(
+                child: Text('XXX'),
+                onPressed: () {
+                  Hive.box('user').delete('username');
+                },
               ),
             ],
           ),
