@@ -47,9 +47,10 @@ class WelcomeScreen extends StatelessWidget {
                     Container(
                       height: MediaQuery.of(context).size.height / 3,
                       decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/illustration.png'))),
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/illustration.png'),
+                        ),
+                      ),
                     ),
                   ),
                   Column(
@@ -78,7 +79,7 @@ class WelcomeScreen extends StatelessWidget {
                                 right: BorderSide(color: Colors.black),
                               )),
                           child: ColouredButton(
-                            text: 'SignUp',
+                            text: 'Sign Up',
                             color: Colors.yellow,
                             page: SignUpPage(),
                           ),

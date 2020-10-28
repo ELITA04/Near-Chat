@@ -1,18 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:near_chat/components/home_screen.dart/bottom_button.dart';
-import 'package:near_chat/components/home_screen.dart/connection_init_sheet.dart';
-import 'package:near_chat/components/home_screen.dart/discovered_users.dart';
+import 'package:near_chat/components/home_screen/bottom_button.dart';
+import 'package:near_chat/components/home_screen/connection_init_sheet.dart';
+import 'package:near_chat/components/home_screen/discovered_users.dart';
 import 'package:near_chat/views/chat/chat_room.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
-class ChatScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final String userName = Random().nextInt(10000).toString();
   final Strategy strategy = Strategy.P2P_STAR;
