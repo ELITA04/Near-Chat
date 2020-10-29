@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final Strategy strategy = Strategy.P2P_STAR;
-  String userName;
+  String username;
 
   String connectedTo = 'None';
   List<DiscoveredUser> usersDiscovered = [];
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Nearby().askLocationAndExternalStoragePermission();
     super.initState();
     var result = Hive.box('user').get('username');
-    userName = result;
+    username = result;
   }
 
   @override
@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text(userName),
+          title: Text(username),
         ),
         body: usersDiscovered.length < 1
             ? Column(
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (enable) {
       try {
         await Nearby().startAdvertising(
-          userName,
+          username,
           strategy,
           onConnectionInitiated: onConnectionInit,
           onConnectionResult: (id, status) {
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (enable) {
       try {
         await Nearby().startDiscovery(
-          userName,
+          username,
           strategy,
           onEndpointFound: (id, name, serviceId) {
             print('$id, $name');
@@ -165,11 +165,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onConnectionInit(String id, ConnectionInfo info) {
+    print(info.endpointName);
     connectionInitSheet(context, id, info.authenticationToken,
-        info.endpointName, info.isIncomingConnection.toString(), handleAccept);
+        info.endpointName, info.isIncomingConnection.toString(), (_) {
+      handleAccept(id, info.endpointName);
+    });
   }
 
-  void handleAccept(id) {
+  void handleAccept(id, endpointName) {
     connectedTo = id;
 
     Navigator.push(
@@ -177,6 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(
         builder: (context) => ChatRoom(
           endpointID: id,
+          endpointName: endpointName,
+          username: username,
         ),
       ),
     );
@@ -184,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void handleRequest(id) {
     Nearby().requestConnection(
-      userName,
+      username,
       id,
       onConnectionInitiated: (id, info) {
         onConnectionInit(id, info);

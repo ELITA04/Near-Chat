@@ -9,8 +9,13 @@ import 'package:nearby_connections/nearby_connections.dart';
 
 class ChatRoom extends StatefulWidget {
   final String endpointID;
+  final String endpointName;
+  final String username;
 
-  ChatRoom({@required this.endpointID});
+  ChatRoom(
+      {@required this.endpointID,
+      @required this.endpointName,
+      @required this.username});
 
   @override
   State createState() => ChatWindow();
@@ -34,8 +39,11 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
     Message message = Message(
       text: str,
       animationController: AnimationController(
-          vsync: this, duration: Duration(milliseconds: 800)),
-      otherUserName: widget.endpointID,
+        vsync: this,
+        duration: Duration(milliseconds: 800),
+      ),
+      sender: false,
+      username: widget.username,
     );
     setState(() {
       _messages.insert(0, message);
@@ -71,7 +79,7 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
       ),
       body: Column(
         children: <Widget>[
-          Text('${widget.endpointID}'),
+          Text('${widget.endpointName}'),
           Flexible(
             child: ListView.builder(
               itemBuilder: (_, int index) => _messages[index],
@@ -100,7 +108,11 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
     Message message = Message(
       text: text,
       animationController: AnimationController(
-          vsync: this, duration: Duration(milliseconds: 800)),
+        vsync: this,
+        duration: Duration(milliseconds: 800),
+      ),
+      sender: true,
+      username: widget.username,
     );
     setState(() {
       _messages.insert(0, message);
