@@ -1,51 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:near_chat/utils/constants.dart';
 
-class Message extends StatelessWidget {
-  final String text;
-  final AnimationController animationController;
-  final bool sender;
+class MessageBubble extends StatelessWidget {
+  final String message;
   final String username;
+  final bool sender;
 
-  Message(
-      {@required this.text,
-      @required this.animationController,
-      @required this.sender,
-      @required this.username});
+  MessageBubble(
+      {@required this.message, @required this.username, @required this.sender});
 
   @override
-  Widget build(BuildContext ctx) {
-    return SizeTransition(
-      sizeFactor:
-          CurvedAnimation(parent: animationController, curve: Curves.bounceOut),
-      axisAlignment: 0.0,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          textDirection: sender ? TextDirection.rtl : TextDirection.ltr,
-          children: <Widget>[
-            Container(
-              margin: sender
-                  ? EdgeInsets.only(left: 18.0)
-                  : EdgeInsets.only(right: 18.0),
-              child: CircleAvatar(
-                child: Text(username[0]),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(username, style: Theme.of(ctx).textTheme.subtitle1),
-                Container(
-                  margin: EdgeInsets.only(top: 6.0),
-                  child: Text(text),
-                )
-              ],
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: BubblePainter(sender: sender),
+      child: Row(
+        textDirection: sender ? TextDirection.rtl : TextDirection.ltr,
+        children: [
+          CircleAvatar(
+            child: Text('${username[0].toUpperCase()}'),
+          ),
+          Padding(
+            padding: EdgeInsets.all(5),
+          ),
+          Text(
+            message,
+            style: TextStyle(color: kBlack),
+          ),
+          Padding(
+            padding: EdgeInsets.all(10),
+          ),
+        ],
       ),
     );
+  }
+}
+
+class BubblePainter extends CustomPainter {
+  final bool sender;
+
+  BubblePainter({@required this.sender});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = this.sender ? kPrimaryColour : kSecondaryColour;
+
+    Path paintBubbleTail() {
+      Path path;
+      if (!sender) {
+        path = Path()
+          ..moveTo(5, size.height - 5)
+          ..quadraticBezierTo(-5, size.height, -16, size.height - 4)
+          ..quadraticBezierTo(-5, size.height - 5, 0, size.height - 17);
+      }
+      if (sender) {
+        path = Path()
+          ..moveTo(size.width - 6, size.height - 4)
+          ..quadraticBezierTo(
+              size.width + 5, size.height, size.width + 16, size.height - 4)
+          ..quadraticBezierTo(
+              size.width + 5, size.height - 5, size.width, size.height - 17);
+      }
+      return path;
+    }
+
+    final RRect bubbleBody = RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, size.width, size.height), Radius.circular(16));
+    final Path bubbleTail = paintBubbleTail();
+
+    canvas.drawRRect(bubbleBody, paint);
+    canvas.drawPath(bubbleTail, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    return true;
   }
 }

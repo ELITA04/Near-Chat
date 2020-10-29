@@ -3,6 +3,7 @@ import 'package:near_chat/animations/animations.dart';
 import 'package:near_chat/views/auth/login.dart';
 import 'package:near_chat/views/auth/sign_up.dart';
 import 'package:near_chat/components/auth/coloured_button.dart';
+import 'package:near_chat/utils/constants.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override
@@ -35,7 +36,7 @@ class WelcomeScreen extends StatelessWidget {
                       Text(
                         "Chat with people in your vicinity!",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey[700], fontSize: 15),
+                        style: TextStyle(color: kGrey, fontSize: 15),
                       ),
                     ),
                   ],
@@ -57,7 +58,7 @@ class WelcomeScreen extends StatelessWidget {
                       1.5,
                       ColouredButton(
                         text: 'Login',
-                        borderSide: BorderSide(color: Colors.black),
+                        borderSide: BorderSide(color: kBlack),
                         page: LoginPage(),
                       ),
                     ),
@@ -71,14 +72,14 @@ class WelcomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             border: Border(
-                              bottom: BorderSide(color: Colors.black),
-                              top: BorderSide(color: Colors.black),
-                              left: BorderSide(color: Colors.black),
-                              right: BorderSide(color: Colors.black),
+                              bottom: BorderSide(color: kBlack),
+                              top: BorderSide(color: kBlack),
+                              left: BorderSide(color: kBlack),
+                              right: BorderSide(color: kBlack),
                             )),
                         child: ColouredButton(
                           text: 'Sign Up',
-                          color: Colors.yellow,
+                          color: kPrimaryColour,
                           page: SignUpPage(),
                         ),
                       ),

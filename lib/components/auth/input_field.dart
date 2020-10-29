@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:near_chat/utils/constants.dart';
 
 class InputField extends StatelessWidget {
   final String label;
@@ -18,7 +19,7 @@ class InputField extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
+              fontSize: 15, fontWeight: FontWeight.w400, color: kBlack),
         ),
         SizedBox(
           height: 5,
@@ -29,9 +30,9 @@ class InputField extends StatelessWidget {
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400])),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400])),
+              borderSide: BorderSide(color: kSecondaryColour),
+            ),
+            border: OutlineInputBorder(),
           ),
         ),
         SizedBox(

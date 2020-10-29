@@ -3,7 +3,9 @@ import 'package:hive/hive.dart';
 import 'package:near_chat/animations/animations.dart';
 import 'package:near_chat/components/auth/input_field.dart';
 import 'package:near_chat/components/auth/coloured_button.dart';
+import 'package:near_chat/components/general/back_button.dart';
 import 'package:near_chat/services/auth.service.dart';
+import 'package:near_chat/utils/constants.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,21 +20,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
+      backgroundColor: kWhite,
       appBar: AppBar(
         elevation: 0,
         brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 20,
-            color: Colors.black,
-          ),
-        ),
+        backgroundColor: kWhite,
+        leading: GeneralBackButton(),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -57,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                     1.2,
                     Text(
                       "Login to your account",
-                      style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                      style: TextStyle(fontSize: 15, color: kGrey),
                     ),
                   ),
                 ],
@@ -88,15 +81,15 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                     border: Border(
-                      bottom: BorderSide(color: Colors.black),
-                      top: BorderSide(color: Colors.black),
-                      left: BorderSide(color: Colors.black),
-                      right: BorderSide(color: Colors.black),
+                      bottom: BorderSide(color: kBlack),
+                      top: BorderSide(color: kBlack),
+                      left: BorderSide(color: kBlack),
+                      right: BorderSide(color: kBlack),
                     ),
                   ),
                   child: ColouredButton(
                     text: 'Submit',
-                    color: Colors.greenAccent,
+                    color: kSecondaryColour,
                     action: () {
                       login(context);
                     },

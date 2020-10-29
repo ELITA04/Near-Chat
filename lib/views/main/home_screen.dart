@@ -34,53 +34,51 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text(username),
-        ),
-        body: usersDiscovered.length < 1
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Text('No Users Near You!'),
-                  ),
-                ],
-              )
-            : ListView(
-                children: usersDiscovered,
-              ),
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              BottomControlButton(
-                name: 'Start Advertising',
-                icon: Icons.visibility,
-                handler: handleAdvertising,
-                isEnabled: isAdvertising,
-              ),
-              BottomControlButton(
-                name: 'Start Discovery',
-                icon: Icons.tap_and_play,
-                handler: handleDiscovery,
-                isEnabled: isDiscovering,
-              ),
-              BottomControlButton(
-                name: 'Go Offline',
-                icon: Icons.portable_wifi_off,
-                handler: handleGoOffline,
-              ),
-              FlatButton(
-                child: Text('XXX'),
-                onPressed: () {
-                  Hive.box('user').delete('username');
-                },
-              ),
-            ],
-          ),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text(username),
+      ),
+      body: usersDiscovered.length < 1
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Text('No Users Near You!'),
+                ),
+              ],
+            )
+          : ListView(
+              children: usersDiscovered,
+            ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            BottomControlButton(
+              name: 'Start Advertising',
+              icon: Icons.visibility,
+              handler: handleAdvertising,
+              isEnabled: isAdvertising,
+            ),
+            BottomControlButton(
+              name: 'Start Discovery',
+              icon: Icons.tap_and_play,
+              handler: handleDiscovery,
+              isEnabled: isDiscovering,
+            ),
+            BottomControlButton(
+              name: 'Go Offline',
+              icon: Icons.portable_wifi_off,
+              handler: handleGoOffline,
+            ),
+            FlatButton(
+              child: Text('XXX'),
+              onPressed: () {
+                Hive.box('user').delete('username');
+              },
+            ),
+          ],
         ),
       ),
     );

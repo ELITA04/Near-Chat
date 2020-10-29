@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:near_chat/views/auth/login.dart';
 import 'package:near_chat/views/auth/sign_up.dart';
-import 'package:near_chat/views/chat/chat_room.dart';
+import 'package:near_chat/utils/constants.dart';
 import 'package:near_chat/views/main/home_screen.dart';
 import 'package:near_chat/views/main/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,6 +39,11 @@ class _NearChatState extends State<NearChat> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: kPrimaryColour,
+        accentColor: kSecondaryColour,
+        accentColorBrightness: Brightness.dark,
+      ),
       routes: {
         '/home': (context) => HomeScreen(),
         '/welcome': (context) => WelcomeScreen(),

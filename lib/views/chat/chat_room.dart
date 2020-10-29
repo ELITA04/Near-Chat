@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:near_chat/components/chat_room/message_bubble.dart';
 import 'package:near_chat/components/chat_room/message_input.dart';
+import 'package:near_chat/components/general/back_button.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -22,8 +23,10 @@ class ChatRoom extends StatefulWidget {
 }
 
 class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
-  final List<Message> _messages = <Message>[];
-  final TextEditingController _textController = TextEditingController();
+  TextEditingController _editingController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  final List<MessageBubble> _messages = <MessageBubble>[];
+  final TextStyle textStyle = TextStyle(color: Colors.white);
 
   @override
   void initState() {
@@ -36,20 +39,16 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
   void handlePayloadReceived(endid, payload) async {
     String str = String.fromCharCodes(payload.bytes);
     print(str);
-    Message message = Message(
-      text: str,
-      animationController: AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: 800),
-      ),
+    MessageBubble message = MessageBubble(
+      message: str,
+      username: widget.endpointName,
       sender: false,
-      username: widget.username,
     );
     setState(() {
       _messages.insert(0, message);
       print('lnegt ${_messages.length}');
     });
-    message.animationController.forward();
+    // message.animationController.forward();
   }
 
   void handlePayloadStatus(endid, payloadTransferUpdate) {
@@ -65,9 +64,9 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    for (Message message in _messages) {
-      message.animationController.dispose();
-    }
+    // for (MessageBubble message in _messages) {
+    //   // message.animationController.dispose();
+    // }
     super.dispose();
   }
 
@@ -75,48 +74,60 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
   Widget build(BuildContext ctx) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat App"),
+        backgroundColor: Colors.yellow,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              child: Text("${widget.endpointName[0].toUpperCase()}"),
+            ),
+            Text("${widget.endpointName}"),
+          ],
+        ),
+        leading: GeneralBackButton(),
       ),
-      body: Column(
-        children: <Widget>[
-          Text('${widget.endpointName}'),
-          Flexible(
-            child: ListView.builder(
-              itemBuilder: (_, int index) => _messages[index],
-              itemCount: _messages.length,
-              reverse: true,
-              padding: EdgeInsets.all(6.0),
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Flexible(
+                    child: ListView.builder(
+                      itemBuilder: (_, int index) => _messages[index],
+                      itemCount: _messages.length,
+                      reverse: true,
+                      padding: EdgeInsets.all(6.0),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Divider(height: 1.0),
-          Container(
-            child: MessageInput(
-              textController: _textController,
-              onSubmit: _submitMessage,
-            ),
-            decoration: BoxDecoration(color: Colors.white),
-          ),
-        ],
+            MessageInput(
+              context: context,
+              editingController: _editingController,
+              focusNode: _focusNode,
+            )
+          ],
+        ),
       ),
     );
+    // message.animationController.forward();
   }
 
   void _submitMessage(String text) {
-    _textController.clear();
+    _editingController.clear();
     Nearby().sendBytesPayload(
         widget.endpointID, Uint8List.fromList(text.codeUnits));
-    Message message = Message(
-      text: text,
-      animationController: AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: 800),
-      ),
-      sender: true,
+    MessageBubble message = MessageBubble(
+      message: text,
       username: widget.username,
+      sender: true,
     );
     setState(() {
       _messages.insert(0, message);
     });
-    message.animationController.forward();
   }
 }
