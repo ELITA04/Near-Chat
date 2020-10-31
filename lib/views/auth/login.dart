@@ -37,12 +37,13 @@ class _LoginPageState extends State<LoginPage> {
               Column(
                 children: <Widget>[
                   FadeAnimation(
-                      1,
-                      Text(
-                        "Login!",
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
-                      )),
+                    1,
+                    Text(
+                      "Login!",
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   SizedBox(
                     height: 20,
                   ),

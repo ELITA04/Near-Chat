@@ -1,49 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:near_chat/utils/constants.dart';
 
 class MessageInput extends StatelessWidget {
-  const MessageInput({
-    Key key,
-    @required this.context,
-    @required TextEditingController editingController,
-    @required FocusNode focusNode,
-  })  : _editingController = editingController,
-        _focusNode = focusNode,
-        super(key: key);
-
   final BuildContext context;
-  final TextEditingController _editingController;
-  final FocusNode _focusNode;
+  final TextEditingController editingController;
+  final FocusNode focusNode;
+  final Function onSend;
+
+  MessageInput(
+      {@required this.context,
+      @required this.editingController,
+      @required this.focusNode,
+      @required this.onSend});
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        bottom: 0,
-        child: Container(
-          padding: EdgeInsets.all(8),
-          width: MediaQuery.of(context).size.width,
-          color: Colors.grey.withOpacity(0.1),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Flexible(
-                child: TextField(
-                  controller: _editingController,
-                  focusNode: _focusNode,
-                  decoration: InputDecoration(hintText: 'Say something...'),
-                ),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.send,
-                  size: 30,
-                ),
-                onPressed: () {
-                  print(_editingController.text);
-                },
-              ),
-            ],
+      bottom: 0,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: kBlack,
+            width: 1,
           ),
-        ));
+        ),
+        padding: EdgeInsets.all(8),
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Flexible(
+              child: TextField(
+                controller: editingController,
+                focusNode: focusNode,
+                decoration: InputDecoration(
+                  hintText: 'Say Something...',
+                  hintStyle: TextStyle(color: kGrey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: kSecondaryColour),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: kPrimaryColour),
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.send,
+                size: 30,
+              ),
+              onPressed: () {
+                onSend(editingController.text);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

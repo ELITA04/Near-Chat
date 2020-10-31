@@ -4,77 +4,72 @@ import 'package:near_chat/utils/constants.dart';
 class MessageBubble extends StatelessWidget {
   final String message;
   final String username;
+  final String time;
   final bool sender;
 
   MessageBubble(
-      {@required this.message, @required this.username, @required this.sender});
+      {@required this.message,
+      @required this.username,
+      @required this.sender,
+      @required this.time});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: BubblePainter(sender: sender),
-      child: Row(
-        textDirection: sender ? TextDirection.rtl : TextDirection.ltr,
-        children: [
-          CircleAvatar(
-            child: Text('${username[0].toUpperCase()}'),
+    final bg = sender ? kPrimaryColour : kSecondaryColour;
+    final align = sender ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final radius = sender
+        ? BorderRadius.only(
+            topLeft: Radius.circular(5.0),
+            bottomLeft: Radius.circular(5.0),
+            topRight: Radius.circular(10.0),
+          )
+        : BorderRadius.only(
+            topRight: Radius.circular(5.0),
+            bottomLeft: Radius.circular(10.0),
+            bottomRight: Radius.circular(5.0),
+          );
+    return Column(
+      crossAxisAlignment: align,
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                blurRadius: .5,
+                spreadRadius: 1.0,
+                color: kBlack.withOpacity(.12),
+              )
+            ],
+            color: bg,
+            borderRadius: radius,
           ),
-          Padding(
-            padding: EdgeInsets.all(5),
+          child: Stack(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 48.0),
+                child: Text(message),
+              ),
+              Positioned(
+                bottom: 0.0,
+                right: 0.0,
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      time,
+                      style: TextStyle(
+                        color: kBlack,
+                        fontSize: 8.0,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-          Text(
-            message,
-            style: TextStyle(color: kBlack),
-          ),
-          Padding(
-            padding: EdgeInsets.all(10),
-          ),
-        ],
-      ),
+        )
+      ],
     );
-  }
-}
-
-class BubblePainter extends CustomPainter {
-  final bool sender;
-
-  BubblePainter({@required this.sender});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = this.sender ? kPrimaryColour : kSecondaryColour;
-
-    Path paintBubbleTail() {
-      Path path;
-      if (!sender) {
-        path = Path()
-          ..moveTo(5, size.height - 5)
-          ..quadraticBezierTo(-5, size.height, -16, size.height - 4)
-          ..quadraticBezierTo(-5, size.height - 5, 0, size.height - 17);
-      }
-      if (sender) {
-        path = Path()
-          ..moveTo(size.width - 6, size.height - 4)
-          ..quadraticBezierTo(
-              size.width + 5, size.height, size.width + 16, size.height - 4)
-          ..quadraticBezierTo(
-              size.width + 5, size.height - 5, size.width, size.height - 17);
-      }
-      return path;
-    }
-
-    final RRect bubbleBody = RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, size.width, size.height), Radius.circular(16));
-    final Path bubbleTail = paintBubbleTail();
-
-    canvas.drawRRect(bubbleBody, paint);
-    canvas.drawPath(bubbleTail, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
-    return true;
   }
 }

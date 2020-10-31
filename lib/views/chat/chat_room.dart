@@ -3,9 +3,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:near_chat/components/chat_room/message_bubble.dart';
 import 'package:near_chat/components/chat_room/message_input.dart';
 import 'package:near_chat/components/general/back_button.dart';
+import 'package:near_chat/utils/constants.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -38,11 +40,13 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
 
   void handlePayloadReceived(endid, payload) async {
     String str = String.fromCharCodes(payload.bytes);
-    print(str);
+    String time = getCurrentTime();
+
     MessageBubble message = MessageBubble(
       message: str,
       username: widget.endpointName,
       sender: false,
+      time: time,
     );
     setState(() {
       _messages.insert(0, message);
@@ -64,24 +68,29 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // for (MessageBubble message in _messages) {
-    //   // message.animationController.dispose();
-    // }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext ctx) {
     return Scaffold(
+      backgroundColor: kWhite,
       appBar: AppBar(
-        backgroundColor: Colors.yellow,
+        backgroundColor: kPrimaryColour,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CircleAvatar(
+              backgroundColor: kGrey,
+              foregroundColor: kPrimaryColour,
+              radius: 15.0,
               child: Text("${widget.endpointName[0].toUpperCase()}"),
             ),
-            Text("${widget.endpointName}"),
+            SizedBox(width: 10.0),
+            Text(
+              "${widget.endpointName}",
+              style: TextStyle(fontSize: 25.0),
+            ),
           ],
         ),
         leading: GeneralBackButton(),
@@ -89,26 +98,31 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
       body: SafeArea(
         child: Stack(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Flexible(
-                    child: ListView.builder(
-                      itemBuilder: (_, int index) => _messages[index],
-                      itemCount: _messages.length,
-                      reverse: true,
-                      padding: EdgeInsets.all(6.0),
+            GestureDetector(
+              onTap: () {
+                _focusNode.unfocus();
+              },
+              child: Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: <Widget>[
+                    Flexible(
+                      child: ListView.builder(
+                        itemBuilder: (_, int index) => _messages[index],
+                        itemCount: _messages.length,
+                        reverse: true,
+                        padding: EdgeInsets.only(bottom: 50.0),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             MessageInput(
               context: context,
               editingController: _editingController,
               focusNode: _focusNode,
+              onSend: _submitMessage,
             )
           ],
         ),
@@ -121,13 +135,21 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
     _editingController.clear();
     Nearby().sendBytesPayload(
         widget.endpointID, Uint8List.fromList(text.codeUnits));
+    String time = getCurrentTime();
     MessageBubble message = MessageBubble(
       message: text,
       username: widget.username,
       sender: true,
+      time: time,
     );
     setState(() {
       _messages.insert(0, message);
     });
+  }
+
+  String getCurrentTime() {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('d MMM kk:mm').format(now);
+    return formattedDate;
   }
 }
