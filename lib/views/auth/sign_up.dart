@@ -97,7 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   child: ColouredButton(
                     text: 'Register',
-                    color: Colors.greenAccent,
+                    color: kSecondaryColour,
                     action: () {
                       signUp(context);
                     },

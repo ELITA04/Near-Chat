@@ -11,7 +11,7 @@ class GeneralBackButton extends StatelessWidget {
       icon: Icon(
         Icons.arrow_back_ios,
         size: 20,
-        color: kBlack,
+        color: kPrimaryColour,
       ),
     );
   }

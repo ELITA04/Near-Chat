@@ -38,6 +38,74 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext ctx) {
+    return Scaffold(
+      backgroundColor: kWhite,
+      appBar: AppBar(
+        backgroundColor: kGrey,
+        bottomOpacity: 0.0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundColor: kPrimaryColour,
+              foregroundColor: kGrey,
+              radius: 15.0,
+              child: Text(
+                "${widget.endpointName[0].toUpperCase()}",
+              ),
+            ),
+            SizedBox(width: 10.0),
+            Text(
+              "${widget.endpointName}",
+              style: TextStyle(fontSize: 25.0, color: kPrimaryColour),
+            ),
+          ],
+        ),
+        titleSpacing: 0.0,
+        leading: GeneralBackButton(),
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                _focusNode.unfocus();
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                child: Column(
+                  children: <Widget>[
+                    Flexible(
+                      child: ListView.builder(
+                        itemBuilder: (_, int index) => _messages[index],
+                        itemCount: _messages.length,
+                        reverse: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          MessageInput(
+            context: context,
+            editingController: _editingController,
+            focusNode: _focusNode,
+            onSend: _submitMessage,
+          ),
+        ],
+      ),
+    );
+    // message.animationController.forward();
+  }
+
   void handlePayloadReceived(endid, payload) async {
     String str = String.fromCharCodes(payload.bytes);
     String time = getCurrentTime();
@@ -64,71 +132,6 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
     } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
       print("success, total bytes = ${payloadTransferUpdate.totalBytes}");
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext ctx) {
-    return Scaffold(
-      backgroundColor: kWhite,
-      appBar: AppBar(
-        backgroundColor: kPrimaryColour,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              backgroundColor: kGrey,
-              foregroundColor: kPrimaryColour,
-              radius: 15.0,
-              child: Text("${widget.endpointName[0].toUpperCase()}"),
-            ),
-            SizedBox(width: 10.0),
-            Text(
-              "${widget.endpointName}",
-              style: TextStyle(fontSize: 25.0),
-            ),
-          ],
-        ),
-        leading: GeneralBackButton(),
-      ),
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                _focusNode.unfocus();
-              },
-              child: Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  children: <Widget>[
-                    Flexible(
-                      child: ListView.builder(
-                        itemBuilder: (_, int index) => _messages[index],
-                        itemCount: _messages.length,
-                        reverse: true,
-                        padding: EdgeInsets.only(bottom: 50.0),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            MessageInput(
-              context: context,
-              editingController: _editingController,
-              focusNode: _focusNode,
-              onSend: _submitMessage,
-            )
-          ],
-        ),
-      ),
-    );
-    // message.animationController.forward();
   }
 
   void _submitMessage(String text) {

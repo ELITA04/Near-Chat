@@ -16,49 +16,49 @@ class MessageInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: kBlack,
-            width: 1,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: kBlack,
+          width: 1.0,
         ),
-        padding: EdgeInsets.all(8),
-        width: MediaQuery.of(context).size.width,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Flexible(
-              child: TextField(
-                controller: editingController,
-                focusNode: focusNode,
-                decoration: InputDecoration(
-                  hintText: 'Say Something...',
-                  hintStyle: TextStyle(color: kGrey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: kSecondaryColour),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: kPrimaryColour),
-                  ),
+      ),
+      padding: EdgeInsets.all(8.0),
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Flexible(
+            child: TextField(
+              controller: editingController,
+              focusNode: focusNode,
+              minLines: 1,
+              maxLines: 5,
+              decoration: InputDecoration(
+                hintText: 'Say Something...',
+                hintStyle: TextStyle(color: kGrey),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: kSecondaryColour),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: kPrimaryColour),
                 ),
               ),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.send,
-                size: 30,
-              ),
-              onPressed: () {
-                onSend(editingController.text);
-              },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.send,
+              size: 30,
+              color: kGrey,
             ),
-          ],
-        ),
+            onPressed: () {
+              onSend(editingController.text);
+            },
+          ),
+        ],
       ),
     );
   }

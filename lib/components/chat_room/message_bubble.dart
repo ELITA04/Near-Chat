@@ -15,25 +15,14 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = sender ? kPrimaryColour : kSecondaryColour;
-    final align = sender ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final radius = sender
-        ? BorderRadius.only(
-            topLeft: Radius.circular(5.0),
-            bottomLeft: Radius.circular(5.0),
-            topRight: Radius.circular(10.0),
-          )
-        : BorderRadius.only(
-            topRight: Radius.circular(5.0),
-            bottomLeft: Radius.circular(10.0),
-            bottomRight: Radius.circular(5.0),
-          );
     return Column(
-      crossAxisAlignment: align,
+      crossAxisAlignment:
+          sender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: const EdgeInsets.all(3.0),
-          padding: const EdgeInsets.all(8.0),
+          margin: EdgeInsets.fromLTRB(
+              sender ? 15.0 : 5.0, 5.0, sender ? 5.0 : 15.0, 5.0),
+          padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -42,14 +31,27 @@ class MessageBubble extends StatelessWidget {
                 color: kBlack.withOpacity(.12),
               )
             ],
-            color: bg,
-            borderRadius: radius,
+            color: sender ? kPrimaryColour : kSecondaryColour,
+            borderRadius: sender
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(kBubbleRadius),
+                    bottomLeft: Radius.circular(kBubbleRadius),
+                    topRight: Radius.circular(kBubbleRadius),
+                  )
+                : BorderRadius.only(
+                    topRight: Radius.circular(kBubbleRadius),
+                    bottomLeft: Radius.circular(kBubbleRadius),
+                    bottomRight: Radius.circular(kBubbleRadius),
+                  ),
           ),
           child: Stack(
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(right: 48.0),
-                child: Text(message),
+                child: Text(
+                  message,
+                  textAlign: TextAlign.justify,
+                ),
               ),
               Positioned(
                 bottom: 0.0,
