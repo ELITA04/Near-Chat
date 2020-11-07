@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:near_chat/components/home_screen/bottom_button.dart';
-import 'package:near_chat/components/home_screen/connection_init_sheet.dart';
+import 'package:near_chat/components/home_screen/connection_alert.dart';
 import 'package:near_chat/components/home_screen/discovered_users.dart';
+import 'package:near_chat/utils/constants.dart';
 import 'package:near_chat/views/chat/chat_room.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 
@@ -19,7 +18,14 @@ class _HomeScreenState extends State<HomeScreen> {
   String username;
 
   String connectedTo = 'None';
-  List<DiscoveredUser> usersDiscovered = [];
+  List<DiscoveredUser> usersDiscovered = [
+    DiscoveredUser(
+      userID: 'DUMMY',
+      userName: 'DUMMY',
+      handleRequest: () {},
+      darkShade: false,
+    )
+  ];
 
   bool isAdvertising = false;
   bool isDiscovering = false;
@@ -38,6 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(username),
+        actions: [
+          FlatButton(
+            child: Text('XXX'),
+            onPressed: () {
+              Hive.box('user').delete('username');
+            },
+          ),
+        ],
       ),
       body: usersDiscovered.length < 1
           ? Column(
@@ -52,17 +66,18 @@ class _HomeScreenState extends State<HomeScreen> {
               children: usersDiscovered,
             ),
       bottomNavigationBar: BottomAppBar(
+        color: kSecondaryColour,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             BottomControlButton(
-              name: 'Start Advertising',
+              name: 'Advertising',
               icon: Icons.visibility,
               handler: handleAdvertising,
               isEnabled: isAdvertising,
             ),
             BottomControlButton(
-              name: 'Start Discovery',
+              name: 'Discovery',
               icon: Icons.tap_and_play,
               handler: handleDiscovery,
               isEnabled: isDiscovering,
@@ -71,12 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
               name: 'Go Offline',
               icon: Icons.portable_wifi_off,
               handler: handleGoOffline,
-            ),
-            FlatButton(
-              child: Text('XXX'),
-              onPressed: () {
-                Hive.box('user').delete('username');
-              },
             ),
           ],
         ),
@@ -123,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     userID: id,
                     userName: name,
                     handleRequest: handleRequest,
+                    darkShade: usersDiscovered.length % 2 == 1 ? true : false,
                   ),
                 );
             });
@@ -164,9 +174,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void onConnectionInit(String id, ConnectionInfo info) {
     print(info.endpointName);
-    connectionInitSheet(context, id, info.authenticationToken,
-        info.endpointName, info.isIncomingConnection.toString(), (_) {
-      handleAccept(id, info.endpointName);
+    connectionAlert(
+      context,
+      id,
+      info.authenticationToken,
+      info.endpointName,
+      info.isIncomingConnection.toString(),
+      () {
+        handleAccept(id, info.endpointName);
+      },
+      () {
+        handleReject();
+      },
+    );
+  }
+
+  void handleReject() {
+    Nearby().stopAllEndpoints().then((_) {
+      handleDiscovery(isDiscovering);
+      handleAdvertising(isAdvertising);
+      setState(() {
+        usersDiscovered = [];
+      });
     });
   }
 
@@ -180,26 +209,25 @@ class _HomeScreenState extends State<HomeScreen> {
           endpointID: id,
           endpointName: endpointName,
           username: username,
+          goBack: handleReject,
         ),
       ),
     );
   }
 
   void handleRequest(id) {
-    Nearby().requestConnection(
-      username,
-      id,
-      onConnectionInitiated: (id, info) {
-        onConnectionInit(id, info);
-      },
-      onConnectionResult: (id, status) {
-        if (status == Status.CONNECTED) {
-          showSnackbar(status);
-        }
-      },
-      onDisconnected: (id) {
-        showSnackbar(id);
-      },
-    );
+    try {
+      Nearby().requestConnection(
+        username,
+        id,
+        onConnectionInitiated: (id, info) {
+          onConnectionInit(id, info);
+        },
+        onConnectionResult: (id, status) {},
+        onDisconnected: (id) {},
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }

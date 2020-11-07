@@ -14,11 +14,13 @@ class ChatRoom extends StatefulWidget {
   final String endpointID;
   final String endpointName;
   final String username;
+  final Function goBack;
 
   ChatRoom(
       {@required this.endpointID,
       @required this.endpointName,
-      @required this.username});
+      @required this.username,
+      @required this.goBack});
 
   @override
   State createState() => ChatWindow();
@@ -69,7 +71,9 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
           ],
         ),
         titleSpacing: 0.0,
-        leading: GeneralBackButton(),
+        leading: GeneralBackButton(
+          goBack: widget.goBack,
+        ),
       ),
       body: Column(
         children: <Widget>[

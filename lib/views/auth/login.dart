@@ -111,9 +111,9 @@ class _LoginPageState extends State<LoginPage> {
       String buttonText, Function onPressed) {
     showDialog(
       context: context,
-      builder: (_) => new AlertDialog(
-        title: new Text(title),
-        content: new Text(text),
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: Text(text),
         actions: <Widget>[
           FlatButton(
             child: Text(buttonText),
