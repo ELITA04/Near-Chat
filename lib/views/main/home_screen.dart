@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:nearby_connections/nearby_connections.dart';
+
 import 'package:near_chat/components/home_screen/bottom_button.dart';
 import 'package:near_chat/components/home_screen/connection_alert.dart';
 import 'package:near_chat/components/home_screen/discovered_users.dart';
+import 'package:near_chat/components/general/navigation_drawer.dart';
 import 'package:near_chat/utils/constants.dart';
 import 'package:near_chat/views/chat/chat_room.dart';
-import 'package:nearby_connections/nearby_connections.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -41,17 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavigationDrawer(),
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(username),
-        actions: [
-          FlatButton(
-            child: Text('XXX'),
-            onPressed: () {
-              Hive.box('user').delete('username');
-            },
-          ),
-        ],
       ),
       body: usersDiscovered.length < 1
           ? Column(
@@ -69,22 +64,25 @@ class _HomeScreenState extends State<HomeScreen> {
         color: kSecondaryColour,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             BottomControlButton(
               name: 'Advertising',
-              icon: Icons.visibility,
+              enableIcon: Icons.visibility,
+              disableIcon: Icons.visibility_off,
               handler: handleAdvertising,
               isEnabled: isAdvertising,
             ),
             BottomControlButton(
               name: 'Discovery',
-              icon: Icons.tap_and_play,
+              enableIcon: Icons.cast_connected,
+              disableIcon: Icons.cast,
               handler: handleDiscovery,
               isEnabled: isDiscovering,
             ),
             BottomControlButton(
               name: 'Go Offline',
-              icon: Icons.portable_wifi_off,
+              enableIcon: Icons.portable_wifi_off,
               handler: handleGoOffline,
             ),
           ],

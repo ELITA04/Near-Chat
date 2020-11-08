@@ -4,14 +4,16 @@ import 'package:near_chat/utils/constants.dart';
 // ignore: must_be_immutable
 class BottomControlButton extends StatefulWidget {
   final String name;
-  final IconData icon;
+  final IconData enableIcon;
+  final IconData disableIcon;
   final Function handler;
   bool isEnabled;
 
   BottomControlButton(
       {@required this.name,
-      @required this.icon,
+      @required this.enableIcon,
       @required this.handler,
+      this.disableIcon,
       this.isEnabled});
 
   @override
@@ -21,16 +23,18 @@ class BottomControlButton extends StatefulWidget {
 class _BottomControlButtonState extends State<BottomControlButton> {
   @override
   Widget build(BuildContext context) {
-    String bottomName =
-        widget.isEnabled != null ? widget.isEnabled ? 'Stop' : 'Start' : '';
-
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           FlatButton(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             child: Icon(
-              widget.icon,
+              widget.isEnabled == null ||
+                      widget.disableIcon == null ||
+                      widget.isEnabled
+                  ? widget.enableIcon
+                  : widget.disableIcon,
               color:
                   widget.isEnabled == null || widget.isEnabled ? kWhite : kGrey,
             ),
@@ -43,13 +47,6 @@ class _BottomControlButtonState extends State<BottomControlButton> {
               }
               setState(() {});
             },
-          ),
-          Text(
-            bottomName,
-            style: TextStyle(
-              color:
-                  widget.isEnabled == null || widget.isEnabled ? kWhite : kGrey,
-            ),
           ),
           Text(
             '${widget.name}',
