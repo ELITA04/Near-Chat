@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:near_chat/views/auth/login.dart';
 import 'package:near_chat/views/auth/sign_up.dart';
 import 'package:near_chat/utils/constants.dart';
 import 'package:near_chat/views/main/home_screen.dart';
 import 'package:near_chat/views/main/welcome_screen.dart';
 import 'package:near_chat/views/main/help_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final Strategy strategy = Strategy.P2P_STAR;
+  final Strategy strategy = Strategy.P2P_POINT_TO_POINT;
   String username;
 
   String connectedTo = 'None';
@@ -75,8 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             BottomControlButton(
               name: 'Discovery',
-              enableIcon: Icons.cast_connected,
-              disableIcon: Icons.cast,
+              enableIcon: Icons.wifi,
+              disableIcon: Icons.wifi_off,
               handler: handleDiscovery,
               isEnabled: isDiscovering,
             ),
