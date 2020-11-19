@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:nearby_connections/nearby_connections.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 import 'package:near_chat/components/home_screen/bottom_button.dart';
 import 'package:near_chat/components/home_screen/connection_alert.dart';
@@ -20,14 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String username;
 
   String connectedTo = 'None';
-  List<DiscoveredUser> usersDiscovered = [
-    DiscoveredUser(
-      userID: 'DUMMY',
-      userName: 'DUMMY',
-      handleRequest: () {},
-      darkShade: false,
-    )
-  ];
+  List<DiscoveredUser> usersDiscovered = [];
 
   bool isAdvertising = false;
   bool isDiscovering = false;
@@ -45,9 +39,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawer: NavigationDrawer(),
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(username),
+      appBar: GradientAppBar(
+        title: Text(
+          'Near Chat Users',
+          style: TextStyle(fontStyle: FontStyle.italic),
+        ),
+        backgroundColorStart: kPrimaryColour,
+        backgroundColorEnd: kSecondaryColour,
       ),
+      backgroundColor: kBackgroundChat,
       body: usersDiscovered.length < 1
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,

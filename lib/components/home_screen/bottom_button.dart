@@ -36,7 +36,7 @@ class _BottomControlButtonState extends State<BottomControlButton> {
                   ? widget.enableIcon
                   : widget.disableIcon,
               color:
-                  widget.isEnabled == null || widget.isEnabled ? kWhite : kGrey,
+                  widget.isEnabled == null || widget.isEnabled ? kWhite : kDarkGrey,
             ),
             onPressed: () {
               if (widget.isEnabled == null) {
@@ -52,7 +52,7 @@ class _BottomControlButtonState extends State<BottomControlButton> {
             '${widget.name}',
             style: TextStyle(
               color:
-                  widget.isEnabled == null || widget.isEnabled ? kWhite : kGrey,
+                  widget.isEnabled == null || widget.isEnabled ? kWhite : kDarkGrey,
             ),
           ),
         ],

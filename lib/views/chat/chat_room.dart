@@ -50,14 +50,14 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: kWhite,
       appBar: AppBar(
-        backgroundColor: kGrey,
+        backgroundColor: kChatRoomBackground,
         bottomOpacity: 0.0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CircleAvatar(
-              backgroundColor: kPrimaryColour,
-              foregroundColor: kGrey,
+              backgroundColor: kWhite,
+              foregroundColor: kChatRoomBackground,
               radius: 15.0,
               child: Text(
                 "${widget.endpointName[0].toUpperCase()}",
@@ -66,7 +66,7 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
             SizedBox(width: 10.0),
             Text(
               "${widget.endpointName}",
-              style: TextStyle(fontSize: 25.0, color: kPrimaryColour),
+              style: TextStyle(fontSize: 25.0, color: kWhite),
             ),
           ],
         ),

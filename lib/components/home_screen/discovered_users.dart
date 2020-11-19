@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:near_chat/utils/constants.dart';
+// import 'package:near_chat/utils/constants.dart';
 
 class DiscoveredUser extends StatefulWidget {
   final String userID;
@@ -20,37 +21,58 @@ class DiscoveredUser extends StatefulWidget {
 class _DiscoveredUserState extends State<DiscoveredUser> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: widget.darkShade ? kDarkGrey : kGrey),
-      padding: EdgeInsets.all(8.0),
-      child: FlatButton(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+    return FlatButton(
+      padding: EdgeInsets.all(0.0),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(8.0, 3.5, 8.0, 3.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: kWhite,
+            border: Border.all(
+              color: kPrimaryColour,
+              width: 2.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: kPrimaryColour,
+                blurRadius: 5.0,
+              )
+            ],
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  child: Text('${widget.userName[0]}'),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: kRed,
+                      child: Text(widget.userName[0],
+                          style: TextStyle(color: kDarkGrey)),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    Text(
+                      widget.userName,
+                      style: TextStyle(
+                        color: kDarkGrey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
-                ),
-                Text(
-                  '${widget.userName}',
-                  style: TextStyle(color: kPrimaryColour),
-                ),
+                Text('User ID: ${widget.userID}')
               ],
             ),
-            Text(
-              'User ID: ${widget.userID}',
-              style: TextStyle(color: kPrimaryColour),
-            ),
-          ],
+          ),
         ),
-        onPressed: () {
-          widget.handleRequest(widget.userID);
-        },
       ),
+      onPressed: () {
+        widget.handleRequest(widget.userID);
+      },
     );
   }
 }

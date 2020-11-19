@@ -36,7 +36,7 @@ class MessageInput extends StatelessWidget {
               maxLines: 5,
               decoration: InputDecoration(
                 hintText: 'Say Something...',
-                hintStyle: TextStyle(color: kGrey),
+                hintStyle: TextStyle(color: kChatRoomBackground),
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                 enabledBorder: OutlineInputBorder(
@@ -52,7 +52,7 @@ class MessageInput extends StatelessWidget {
             icon: Icon(
               Icons.send,
               size: 30,
-              color: kGrey,
+              color: kChatRoomBackground,
             ),
             onPressed: () {
               onSend(editingController.text);

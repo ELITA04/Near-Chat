@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'package:near_chat/components/general/navigation_drawer.dart';
 import 'package:near_chat/utils/constants.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 class HelpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackgroundChat,
       drawer: NavigationDrawer(),
-      appBar: AppBar(
-        title: Text('How to Use?'),
+      appBar: GradientAppBar(
+        title: Text('Flutter'),
+        backgroundColorEnd: kPrimaryColour,
+        backgroundColorStart: kSecondaryColour,
       ),
       body: ListView(
         children: [
@@ -51,11 +55,19 @@ class HelpInfo extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Container(
+        
         decoration: BoxDecoration(
+          color: kWhite,
           border: Border.all(
             color: Colors.black,
             width: 2.0,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: kPrimaryColour,
+              blurRadius: 5.0,
+            ),
+          ],
           borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(

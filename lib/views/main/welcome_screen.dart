@@ -36,7 +36,7 @@ class WelcomeScreen extends StatelessWidget {
                       Text(
                         "Chat with people in your vicinity!",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: kGrey, fontSize: 15),
+                        style: TextStyle(color: kDarkGrey, fontSize: 15),
                       ),
                     ),
                   ],

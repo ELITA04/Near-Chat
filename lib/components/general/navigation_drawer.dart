@@ -36,7 +36,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   ),
                 ),
               ),
-              decoration: BoxDecoration(color: kSecondaryColour),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [kSecondaryColour, kPrimaryColour])),
               margin: EdgeInsets.all(0.0),
               padding: EdgeInsets.all(10.0),
             ),
@@ -46,15 +50,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               children: [
                 Icon(Icons.home),
                 SizedBox(
-                  width: 5.0,
+                  width: 3.0,
                 ),
                 Text('Home'),
               ],
             ),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
               Navigator.popAndPushNamed(context, '/home');
             },
           ),
@@ -64,15 +65,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               children: [
                 Icon(Icons.help_outline),
                 SizedBox(
-                  width: 5.0,
+                  width: 3.0,
                 ),
                 Text('How to Use?'),
               ],
             ),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
               Navigator.popAndPushNamed(context, '/help');
             },
           ),
@@ -82,7 +80,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               children: [
                 Icon(Icons.logout),
                 SizedBox(
-                  width: 5.0,
+                  width: 3.0,
                 ),
                 Text('Logout'),
               ],
