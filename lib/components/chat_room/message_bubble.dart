@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:near_chat/utils/constants.dart';
 
 class MessageBubble extends StatelessWidget {
   final String message;
+  final File image;
   final String username;
   final String time;
   final bool sender;
 
   MessageBubble(
-      {@required this.message,
+      {this.message,
+      this.image,
       @required this.username,
       @required this.sender,
       @required this.time});
@@ -44,32 +48,54 @@ class MessageBubble extends StatelessWidget {
                     bottomRight: Radius.circular(kBubbleRadius),
                   ),
           ),
-          child: Stack(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(right: 48.0),
-                child: Text(
-                  message,
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-              Positioned(
-                bottom: 0.0,
-                right: 0.0,
-                child: Row(
+          child: message != null
+              ? Stack(
                   children: <Widget>[
-                    Text(
-                      time,
-                      style: TextStyle(
-                        color: kBlack,
-                        fontSize: 8.0,
+                    Padding(
+                      padding: EdgeInsets.only(right: 48.0),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.justify,
                       ),
                     ),
+                    Positioned(
+                      bottom: 0.0,
+                      right: 0.0,
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            time,
+                            style: TextStyle(
+                              color: kBlack,
+                              fontSize: 8.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   ],
-                ),
-              )
-            ],
-          ),
+                )
+              : Stack(children: <Widget>[
+                  Image.file(image),
+                  Positioned(
+                    bottom: 0.0,
+                    right: 0.0,
+                    child: Container(
+                      padding: EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(60.0)),
+                        color: kBlack.withOpacity(0.5),
+                      ),
+                      child: Text(
+                        time,
+                        style: TextStyle(
+                          color: kWhite,
+                          fontSize: 8.0,
+                        ),
+                      ),
+                    ),
+                  )
+                ]),
         )
       ],
     );

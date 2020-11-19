@@ -1,18 +1,24 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:near_chat/utils/constants.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MessageInput extends StatelessWidget {
   final BuildContext context;
   final TextEditingController editingController;
   final FocusNode focusNode;
-  final Function onSend;
+  final Function onSendMessage;
+  final Function onSendPicture;
+  final picker = ImagePicker();
 
   MessageInput(
       {@required this.context,
       @required this.editingController,
       @required this.focusNode,
-      @required this.onSend});
+      @required this.onSendMessage,
+      @required this.onSendPicture});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +34,14 @@ class MessageInput extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.image,
+              size: 30,
+              color: kChatRoomBackground,
+            ),
+            onPressed: getImage,
+          ),
           Flexible(
             child: TextField(
               controller: editingController,
@@ -55,11 +69,46 @@ class MessageInput extends StatelessWidget {
               color: kChatRoomBackground,
             ),
             onPressed: () {
-              onSend(editingController.text);
+              onSendMessage(editingController.text);
             },
           ),
         ],
       ),
+    );
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    previewImage(File(pickedFile.path), pickedFile.path);
+  }
+
+  void previewImage(image, path) {
+    showDialog(
+      context: context,
+      builder: (builder) {
+        return AlertDialog(
+          title: Center(child: Text('Send Image?')),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.file(image),
+                FlatButton(
+                  color: kGreen,
+                  child: Text(
+                    'Send',
+                    style: TextStyle(color: kBlack),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onSendPicture(image, path);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

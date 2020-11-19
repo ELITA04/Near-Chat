@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,10 +28,12 @@ class ChatRoom extends StatefulWidget {
 }
 
 class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
-  TextEditingController _editingController = TextEditingController();
-  FocusNode _focusNode = FocusNode();
+  TextEditingController editingController = TextEditingController();
+  FocusNode focusNode = FocusNode();
   final List<MessageBubble> _messages = <MessageBubble>[];
   final TextStyle textStyle = TextStyle(color: Colors.white);
+  Map<int, String> map = Map();
+  File tempFile;
 
   @override
   void initState() {
@@ -80,7 +83,7 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                _focusNode.unfocus();
+                focusNode.unfocus();
               },
               child: Container(
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
@@ -100,9 +103,10 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
           ),
           MessageInput(
             context: context,
-            editingController: _editingController,
-            focusNode: _focusNode,
-            onSend: _submitMessage,
+            editingController: editingController,
+            focusNode: focusNode,
+            onSendMessage: sendMessage,
+            onSendPicture: sendPicture,
           ),
         ],
       ),
@@ -111,20 +115,55 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
   }
 
   void handlePayloadReceived(endid, payload) async {
-    String str = String.fromCharCodes(payload.bytes);
-    String time = getCurrentTime();
+    if (payload.type == PayloadType.BYTES) {
+      String str = String.fromCharCodes(payload.bytes);
+      String time = getCurrentTime();
 
-    MessageBubble message = MessageBubble(
-      message: str,
-      username: widget.endpointName,
-      sender: false,
-      time: time,
-    );
-    setState(() {
-      _messages.insert(0, message);
-      print('lnegt ${_messages.length}');
-    });
-    // message.animationController.forward();
+      if (str.contains('image_picker')) {
+        // used for file payload as file payload is mapped as
+        // payloadId:filename
+        print('In str contains');
+        int payloadId = int.parse(str.split(':')[0]);
+        String fileName = (str.split(':')[1]);
+
+        if (map.containsKey(payloadId)) {
+          if (await tempFile.exists()) {
+            print('Filename: ' + fileName);
+            tempFile.rename(tempFile.parent.path + "/" + fileName);
+          } else {
+            print("File doesnt exist");
+          }
+        } else {
+          //add to map if not already
+          map[payloadId] = fileName;
+        }
+      } else {
+        MessageBubble message = MessageBubble(
+          message: str,
+          username: widget.endpointName,
+          sender: false,
+          time: time,
+        );
+        setState(() {
+          _messages.insert(0, message);
+          print('lnegt ${_messages.length}');
+        });
+      }
+    } else if (payload.type == PayloadType.FILE) {
+      tempFile = File(payload.filePath);
+      String time = getCurrentTime();
+
+      MessageBubble message = MessageBubble(
+        image: tempFile,
+        username: widget.endpointName,
+        sender: false,
+        time: time,
+      );
+      setState(() {
+        _messages.insert(0, message);
+        print('lnegt ${_messages.length}');
+      });
+    }
   }
 
   void handlePayloadStatus(endid, payloadTransferUpdate) {
@@ -138,13 +177,33 @@ class ChatWindow extends State<ChatRoom> with TickerProviderStateMixin {
     }
   }
 
-  void _submitMessage(String text) {
-    _editingController.clear();
+  void sendMessage(String text) {
+    editingController.clear();
     Nearby().sendBytesPayload(
         widget.endpointID, Uint8List.fromList(text.codeUnits));
     String time = getCurrentTime();
     MessageBubble message = MessageBubble(
       message: text,
+      username: widget.username,
+      sender: true,
+      time: time,
+    );
+    setState(() {
+      _messages.insert(0, message);
+    });
+  }
+
+  void sendPicture(File image, String imagePath) async {
+    if (imagePath == null) return;
+    int payloadId =
+        await Nearby().sendFilePayload(widget.endpointID, imagePath);
+    Nearby().sendBytesPayload(
+      widget.endpointID,
+      Uint8List.fromList("$payloadId:${imagePath.split('/').last}".codeUnits),
+    );
+    String time = getCurrentTime();
+    MessageBubble message = MessageBubble(
+      image: image,
       username: widget.username,
       sender: true,
       time: time,
